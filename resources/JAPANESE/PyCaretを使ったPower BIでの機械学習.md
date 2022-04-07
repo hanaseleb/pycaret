@@ -94,8 +94,8 @@ COVID-19のような伝染病の発生におけるジオクラスターの特定
 
 次のコードをPythonスクリプトとして実行します。
 
-    from **pycaret.clustering **import *****
-    データセット = **get_clusters**(data = dataset)
+    from pycaret.clustering import *
+    dataset = get_clusters(data = dataset)
 
 ![Power Query Editor (Transform → Run python script)](https://cdn-images-1.medium.com/max/2000/1*nYqJWQM6NI3q3tLJXIVxtg.png)
 
@@ -105,7 +105,7 @@ COVID-19のような伝染病の発生におけるジオクラスターの特定
 
 ![Final Output (after clicking on Table)](https://cdn-images-1.medium.com/max/2000/1*PXWUtrYrNikCRDqhn_TgDw.png)
 
-元のテーブルに、ラベルを含んだ新しい列**'Cluster' **が付けられます。
+元のテーブルに、ラベルを含んだ新しい列**'Cluster'**が付けられます。
 
 クエリを適用すると（Power Query Editor → Home → Close & Apply）、Power BIでクラスターを可視化する方法は以下の通りです。
 
@@ -152,8 +152,8 @@ PyCaretには9つのすぐに使えるクラスタリングアルゴリズムが
 
 クラスタリングと同様に、Power Query EditorからPythonスクリプトを実行して（Transform → Run python script）、異常検知モデルを学習させます。以下のコードをPythonスクリプトとして実行します。
 
-    from **pycaret.anomaly **import *****
-    データセット = **get_outliers**(data = dataset)
+    from pycaret.anomaly import *
+    データセット = get_outliers(data = dataset)
 
 ![Power Query Editor (Transform → Run python script)](https://cdn-images-1.medium.com/max/2000/1*re7Oj-bPUHok7pCbmeWFuw.png)
 
@@ -188,7 +188,7 @@ PyCaretには10以上のすぐに使える異常検知アルゴリズムがあ�
 
 この例では、**get_outliers()** 関数を使用して、異常値のラベルとスコアを割り当てて分析しています。クエリが更新されるたびに、外れ値が再計算されます。別の実装方法としては、PythonやPower BIで事前に学習したモデルを使って、**predict_model()** 関数を使って外れ値を予測する方法があります（*Power BI環境で機械学習モデルを学習する方法については、以下の例5を参照してください）。
 
-💡 Jupyter Notebookを使ってPythonで異常検知器を学習する方法を知りたい方は、【異常検知101初心者向けチュートリアル】(https://www.pycaret.org/ano101)をご覧ください。*(コーディングの知識は必要ありません).*
+💡 Jupyter Notebookを使ってPythonで異常検知器を学習する方法を知りたい方は、【異常検知101初心者向けチュートリアル】(<https://www.pycaret.org/ano101>)をご覧ください。*(コーディングの知識は必要ありません).*
 
 ## 📘 例3 - 自然言語処理
 
@@ -285,7 +285,7 @@ Association Rule Mining **** は、データベース内の変数間の興味深
 
 分類は、クラスタリングや異常検知、NLPのような教師なし機械学習とは異なり、 **教師あり** の技術であるため、2つのパートに分けて実施します。
 
-### Part 1: Power BIで分類モデルを学習する**
+### Part 1: **Power BIで分類モデルを学習する**
 
 まず、Power Query Editorで、モデルの学習に使用するテーブル **'employee'** の複製を作成します。
 
@@ -293,22 +293,24 @@ Association Rule Mining **** は、データベース内の変数間の興味深
 
 新たに作成した複製テーブル **'employee (model training)'** で以下のコードを実行し、分類モデルを学習させます。
 
-    # import classification module and setup environment
+```python
+# import classification module and setup environment
 
-    from **pycaret.classification **import *****
-    clf1 = **setup**(dataset, target = 'left', silent = True)
+from pycaret.classification import *
+clf1 = setup(dataset, target = 'left', silent = True)
 
-    # xgboostモデルの学習と保存
+# xgboostモデルの学習と保存
 
-    xgboost = **create_model**('xgboost', verbose = False)
-    final_xgboost = **finalize_model**(xgboost)
-    **save_model**(final_xgboost, 'C:/Users/*username*/xgboost_powerbi')
+xgboost = create_model('xgboost', verbose = False)
+final_xgboost = finalize_model(xgboost)
+save_model(final_xgboost, 'C:/Users/*username*/xgboost_powerbi')
+```
 
 ![Power Query Editor (Transform → Run python script)](https://cdn-images-1.medium.com/max/2000/1*0qLtTngg_uI31JTSPLNSiQ.png)
 
 ### 出力
 
-このスクリプトの出力は、定義された場所に保存された**pickleファイル**になります。このpickleファイルには、データ変換パイプライン全体と学習済みモデルオブジェクトが含まれています。
+このスクリプトの出力は、定義された場所に保存されたpickleファイルになります。このpickleファイルには、データ変換パイプライン全体と学習済みモデルオブジェクトが含まれています。
 
 💡 Power BIではなく、Jupyter notebookでモデルを学習することも可能です。この場合、Power BIは、Jupyter notebookで事前に学習したモデルをPickleファイルとしてPower BIにインポートして、フロントエンドで予測を生成するためにのみ使用されます（以下のPart 2に従ってください）。PythonでPyCaretを使う方法については、[こちら](https://www.pycaret.org/tutorial)をご覧ください。
 
@@ -320,11 +322,13 @@ PyCaretには18種類の分類アルゴリズムが用意されています。
 
 ### Part 2: 学習したモデルを使った予測の生成
 
-では、元の **'employee'** table に対して学習したモデルを使って、その社員が会社を辞めるかどうか（1か0か）とその確率%を予測してみましょう。以下のコードをpythonスクリプトとして実行し、予測値を生成します。
+では、元の **'employee'** tableに対して学習したモデルを使って、その社員が会社を辞めるかどうか（1か0か）とその確率%を予測してみましょう。以下のコードをpythonスクリプトとして実行し、予測値を生成します。
 
-    from **pycaret.classification** import *****
-    xgboost = **load_model**('c:/users/*username*/xgboost_powerbi')
-    データセット = **predict_model**(xgboost, data = dataset)
+```python
+from pycaret.classification import *
+xgboost = load_model('c:/users/*username*/xgboost_powerbi')
+データセット = predict_model(xgboost, data = dataset)
+```
 
 ### 出力
 
@@ -336,11 +340,11 @@ PyCaretには18種類の分類アルゴリズムが用意されています。
 
 この例では、モデルのトレーニングに使用したのと同じデータを使って予測を行いました。これはデモ目的のみです。実際の設定では、**'Left'** 列は実際の結果であり、予測の時点では不明です。
 
-このチュートリアルでは、**Extreme Gradient Boosting** **('xgboost')**モデルを学習し、それを使って予測を行います。これは簡単にするためだけに行ったものです。実際には、PyCaretを使用して、あらゆるタイプのモデルやモデルの連鎖を予測することができます。
+このチュートリアルでは、**Extreme Gradient Boosting**('xgboost')モデルを学習し、それを使って予測を行います。これは簡単にするためだけに行ったものです。実際には、PyCaretを使用して、あらゆるタイプのモデルやモデルの連鎖を予測できます。
 
 PyCaretの **predict_model()** 関数は、PyCaretを使って作成されたpickleファイルとシームレスに動作します。pickleファイルには、変換パイプライン全体と学習済みモデルオブジェクトが含まれています。[predict_model()関数の詳細はこちら](https://www.pycaret.org/predict-model)をご参照ください。
 
-💡 [missing value imputation](https://pycaret.org/missing-values/) (テーブルに欠損や *null *value がある場合), [one-hot-encoding](https://pycaret.org/one-hot-encoding/), [target encoding](https://www.pycaret.org/one-hot-encoding) など、分類モデルの学習に必要なすべての前処理が、モデルの学習前に自動的に実行されます。PyCaretの前処理機能については、[こちら](https://www.pycaret.org/preprocessing)をご覧ください。
+💡 [missing value imputation](https://pycaret.org/missing-values/) (テーブルに欠損や *null*valueがある場合), [one-hot-encoding](https://pycaret.org/one-hot-encoding/), [target encoding](https://www.pycaret.org/one-hot-encoding) など、分類モデルの学習に必要なすべての前処理が、モデルの学習前に自動的に実行されます。PyCaretの前処理機能については、[こちら](https://www.pycaret.org/preprocessing)をご覧ください。
 
 ## 📘 Example 6- Regression in Power BI
 
@@ -359,16 +363,19 @@ PyCaretの **predict_model()** 関数は、PyCaretを使って作成されたpic
 
 複製した新しいテーブルで以下のコードをpythonスクリプトとして実行します。
 
-    # import regression module and setup environment
+```python
 
-    from **pycaret.regression **import *****
-    clf1 = **setup**(Dataset, target = 'medv', silent = True)
+# import regression module and setup environment
 
-    # catboostモデルの学習と保存
+from pycaret.regression import *
+clf1 = setup(Dataset, target = 'medv', silent = True)
 
-    catboost = **create_model**('catboost', verbose = False)
-    final_catboost = **finalize_model**(catboost)
-    **save_model**(final_catboost, 'C:/Users/*username*/catboost_powerbi')
+# catboostモデルの学習と保存
+
+catboost = create_model('catboost', verbose = False)
+final_catboost = finalize_model(catboost)
+save_model(final_catboost, 'C:/Users/*username*/catboost_powerbi')
+```
 
 ### 出力
 
@@ -382,9 +389,11 @@ PyCaretには20種類以上の回帰アルゴリズムが用意されていま�
 
 それでは、学習したモデルを使って、住宅の中央値を予測してみましょう。元のテーブル **'boston'** に以下のコードをpythonスクリプトとして実行します。
 
-    from **pycaret.classification** import *****
-    xgboost = **load_model**('c:/users/*username*/xgboost_powerbi')
-    データセット = **predict_model**(xgboost, data = dataset)
+```python
+from pycaret.classification import *
+xgboost = load_model('c:/users/*username*/xgboost_powerbi')
+データセット = predict_model(xgboost, data = dataset)
+```
 
 ### 出力
 
@@ -396,7 +405,7 @@ PyCaretには20種類以上の回帰アルゴリズムが用意されていま�
 
 この例では、モデルのトレーニングに使用したのと同じデータを使って予測を行いました。これはデモ目的のみです。実際の設定では、**'medv'** 列は実際の結果であり、予測時には不明です。
 
-💡 回帰モデルの学習に必要な前処理として、[欠損値インピュテーション](https://pycaret.org/missing-values/)(テーブルに欠損値や*null *値がある場合)、[ワンショットエンコーディング](https://pycaret.org/one-hot-encoding/)、[ターゲット変換](https://pycaret.org/transform-target/)などの作業が、モデル学習前に自動的に行われます。[PyCaretの前処理機能についてはこちら](https://www.pycaret.org/preprocessing)を参照してください。
+💡 回帰モデルの学習に必要な前処理として、[欠損値インピュテーション](https://pycaret.org/missing-values/)(テーブルに欠損値や*null*値がある場合)、[ワンショットエンコーディング](https://pycaret.org/one-hot-encoding/)、[ターゲット変換](https://pycaret.org/transform-target/)などの作業が、モデル学習前に自動的に行われます。[PyCaretの前処理機能についてはこちら](https://www.pycaret.org/preprocessing)を参照してください。
 
 ## 次のチュートリアル
 
@@ -419,7 +428,7 @@ PyCaretには20種類以上の回帰アルゴリズムが用意されていま�
 
 ## What's in the development pipeline?
 
-私たちは、PyCaretの改良に積極的に取り組んでいます。今後の開発パイプラインには、新しい**時系列予測**モジュール、**TensorFlowとの統合、**PyCaretのスケーラビリティの大幅な改善が含まれています。ご意見やご感想をお寄せいただける場合は、ウェブサイトの [fill this form](https://www.pycaret.org/feedback)、または [Github](https://www.github.com/pycaret/)や [LinkedIn](https://www.linkedin.com/company/pycaret/)のページにコメントをお寄せください。
+私たちは、PyCaretの改良に積極的に取り組んでいます。今後の開発パイプラインには、新しい**時系列予測**モジュール、**TensorFlowとの統合**、**PyCaretのスケーラビリティ**の大幅な改善が含まれています。ご意見やご感想をお寄せいただける場合は、ウェブサイトの [fill this form](https://www.pycaret.org/feedback)、または [Github](https://www.github.com/pycaret/)や [LinkedIn](https://www.linkedin.com/company/pycaret/)のページにコメントをお寄せください。
 
 ## 特定のモジュールについて知りたいですか？
 

@@ -111,11 +111,11 @@ PyCaretには8種類以上のすぐに使えるクラスタリングアルゴリ
 
 ![](https://cdn-images-1.medium.com/max/2632/1*ihezKFr61Vrgu7E-0-JA5g.png)
 
-デフォルトでは、PyCaretは4つのクラスタを持つ**K-Means Clusteringモデル**を学習します。デフォルト値は簡単に変更できます。
+デフォルトでは、PyCaretは4つのクラスターを持つ**K-Means Clusteringモデル**を学習します。デフォルト値は簡単に変更できます。
 
-*モデルタイプを変更するには、**get_clusters()**の**model ***パラメータを使用します。
+*モデルタイプを変更するには、**get_clusters()のmodel***パラメーターを使用します。
 
-モデルタイプを変更するには，**get_clusters()**の**model**パラメータを使用する。
+モデルタイプを変更するには，**get_clusters()**の**model**パラメーターを使用する。
 
 6クラスタの**K-Modes Clustering**のサンプルコードを参照してください。
 
